@@ -1,0 +1,38 @@
+/*************Responsive Styles*****************/
+/***************iPhone Portrait**************/
+@media only screen and (max-width: 479px) and (min-width: 320px){
+
+}
+/**********************iPhone Landscape*************/
+@media only screen and (max-width: 767px) and (min-width: 480px){
+ 
+}
+/*************************iPad Portrait***************/
+@media only screen and (max-width: 985px) and (min-width: 768px){
+.other-menus{
+    width: 100%;
+    padding-top: 15px;
+}
+.switch-col{
+    position: relative;
+}
+.menu-panel {
+    flex-direction: column;
+}
+
+}
+/**************iPad Landscape***************/
+@media only screen and ( max-width: 1181px ) and (min-width: 986px){
+    .other-menus{
+        width: 100%;
+        padding-top: 15px;
+    }
+    .switch-col{
+        position: relative;
+    }
+    .menu-panel {
+        flex-direction: column;
+    }
+
+}
+/*******************************************/

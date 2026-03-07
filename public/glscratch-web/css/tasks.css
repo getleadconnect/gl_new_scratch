@@ -1,0 +1,204 @@
+.modal-dialog-full {
+    max-width: 6400px !important;
+    width: 90% !important;
+    }
+    /* .dataTables_scrollBody {
+    transform: rotateX(180deg);
+    }
+    .dataTables_scrollBody table {
+    transform: rotateX(180deg);
+    } */
+    .popup-title {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 20px;
+    color: #3A3D4B;
+    }
+    .popup-subtitle {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 18px;
+    color: #7995B7;
+    margin-top: 23px;
+    }
+    .popup-text {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 19px;
+    color: #526185;
+    }
+    a.slaes {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 17px;
+    color: #039381;
+    background: #C7F2F5;
+    border-radius: 4px;
+    padding: 6px 10px;
+    margin-right: 10px;
+    }
+    a.operatins {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 17px;
+    color: #E16C00;
+    background: #FFDAB7;
+    border-radius: 4px;
+    padding: 6px 10px;
+    text-decoration: none;
+    }
+    a.popup-call {
+    font-size: 12px;
+    line-height: 17px;
+    color: #526185;
+    background: #F1F6FB;
+    border-radius: 4px;
+    padding: 6px 10px;
+    margin-left: 10px;
+    text-decoration: none;
+    }
+    a.popup-miscall {
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 16px;
+    color: #FF5367;
+    background: rgba(255, 83, 103, 0.16);
+    border-radius: 4px;
+    padding: 6px 10px;
+    text-decoration: none;
+    margin-left: 10px;
+    }
+    .popup-body {
+    padding: 35px;
+    }
+    .popup-ul li {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 18px;
+    color: #526185;
+    list-style-position: inside;
+    }
+    span.popup-date {
+    background: #F1F6FB;
+    border-radius: 4px;
+    padding: 10px;
+    margin-left: 10px;
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 17px;
+    color: #526185;
+    }
+    a.orange-link {
+    color: #E16C00;
+    text-decoration: none;
+    }
+    ul.popup-ul {
+    padding: 0;
+    }
+    a.full-btn {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 21px;
+    text-align: center;
+    color: #FFFFFF;
+    background: #FF5367;
+    border-radius: 6px;
+    width: 100%;
+    display: block;
+    padding: 15px;
+    text-decoration: none;
+    }
+    .next-prev-btn {
+    width: 49%;
+    display: block;
+    border: 1px solid #3A3D4B;
+    box-sizing: border-box;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 21px;
+    text-align: center;
+    color: #3A3D4B;
+    padding: 15px;
+    text-decoration: none;
+    }
+    .pendingTask p {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    color: #3A3D4B;
+    text-align: center;
+    padding-top: 20px;
+    }
+    .pendingTask span {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 16px;
+    color: #F9FCFF;
+    background: #4B8EF1;
+    border-radius: 100px;
+    padding: 5px 9px;
+    margin-left: 5px;
+    }
+    /******************* Second page ************************/
+    .callfeedbackModelHead {
+    border: none;
+    }
+    .callfeedbackModelHead h5 {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 28px;
+    color: #3A3D4B;
+    }
+    .callfeedbackModelBody label {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 18px;
+    color: #7995B7;
+    }
+    .callfeedbackModelBody select option,
+    .callfeedbackModelBody select {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 19px;
+    color: #526185;
+    }
+    .prospectus .fa-plus-square {
+    font-size: 18px;
+    color: #3DD3C1;
+    padding-right: 5px;
+    }
+    .prospectus a {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 18px;
+    color: #3A3D4B;
+    text-decoration: none;
+    }
