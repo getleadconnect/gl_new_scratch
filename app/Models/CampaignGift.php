@@ -15,7 +15,7 @@ class CampaignGift extends Model
         return $this->belongsTo(Campaign::class, 'campaign_id');
     }
     
-    public function users()
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }

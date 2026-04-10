@@ -18,6 +18,7 @@ use App\Models\ScratchLinkHistory;
 use App\Models\Branch;
 use App\Models\User;
 use App\Models\Setting;
+use App\Models\CompanyLogo;
 
 //use App\Models\GlApiTokens;
 use App\Models\UserOtp;
@@ -45,11 +46,28 @@ class GlScratchWebController extends Controller
 
    use  CrmApiService, GeneralTrait;
  
-     public function index($id,$code)
+    public function index($id,$code)
     {
-		$user_id=$id;
+		
+        $user_id=$id;
 
-		$messageText = "Oops this link is Invalid";
+        $logo=CompanyLogo::where('user_id',$user_id)->where('type','logo')->where('is_active',1)->first();
+        $favicon=CompanyLogo::where('user_id',$user_id)->where('type','favicon')->where('is_active',1)->first();
+
+        $userStatus=User::where('id',$id)->where('status',1)->pluck('subscription_end_date')->first();
+        
+        if($userStatus==null) //checking for user account is active/expired
+        {
+            $messageText = "Oops!! This account is disabled!";
+            return view('gl-scratch-web.short-link.invalid',compact('messageText'));
+        }
+        elseif(date($userStatus)<date('Y-m-d'))
+        {
+            $messageText = "Oops!! This account is expired!";
+            return view('gl-scratch-web.short-link.invalid',compact('messageText'));
+        }
+        
+        $messageText = "Oops this link is Invalid";
 		$scratchlink=ScratchLink::where('user_id',$user_id)->where('short_code',$code)->where('status',1)->first();
 
         if(!empty($scratchlink)){
@@ -191,7 +209,7 @@ class GlScratchWebController extends Controller
             if($user){       
                 $offer=Campaign::where('user_id',$user_id)->where('status',1)->where('id',$scratchlink->campaign_id)->first(); 
                 if($offer){
-                    return view('gl-scratch-web.scratch.index', compact(['user','offer','scratchlink','branches','otp_enabled']));
+                    return view('gl-scratch-web.scratch.index', compact(['user','offer','scratchlink','branches','otp_enabled','favicon','logo']));
                 }else{
                     $messageText = "Oops!! There is no offers added.";
                     return view('gl-scratch-web.short-link.invalid',compact('messageText'));
@@ -607,6 +625,7 @@ public function nikkoyHondaSendOtp($data)
 					//------send partner to crm-----
 					//$send_response=$this->sendCustomerDetailsToCrm($data);
 					//------------------------------
+
 					dispatch(new SentCrmServiceJob($data));
 				}
 			}

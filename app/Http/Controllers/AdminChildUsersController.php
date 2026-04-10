@@ -18,8 +18,11 @@ class AdminChildUsersController extends Controller
      */
     public function index(): View
     {
+        $adminId = auth()->user()->id;
+        $parentUser = User::findOrFail($adminId);
         return view('admin.child-users.index', [
             'pageTitle' => 'Users',
+            'parentName'=>$parentUser->name,
         ]);
     }
 
@@ -32,7 +35,9 @@ class AdminChildUsersController extends Controller
             $adminId = auth()->user()->id;
             $today   = now()->toDateString();
 
-            $query = User::where('role_id', 3)
+            $query = User::select('users.*','scratch_counts.balance_count')
+                ->leftJoin('scratch_counts','users.id','=','scratch_counts.user_id')    
+                ->where('role_id', 3)
                 ->where('parent_id', $adminId)
                 ->whereNull('deleted_at');
 
@@ -98,6 +103,11 @@ class AdminChildUsersController extends Controller
                     }
                     return $dt;
                 })
+                ->addColumn('credits', function ($user) {
+                    
+                    return $user->balance_count??0;
+                })
+
                 ->addColumn('action', function ($user) {
                     return '
                         <div class="flex items-center gap-2">
@@ -134,6 +144,7 @@ class AdminChildUsersController extends Controller
     /**
      * Store a new child user.
      */
+
     public function store(Request $request)
     {
         try {
@@ -182,7 +193,7 @@ class AdminChildUsersController extends Controller
             $user->update(['unique_id' => $uniq_id]);
 
             Settings::create([
-                'settings_type'  => 'scratch_otp_enabled',
+                'settings_type'  => 'otp_enabled',
                 'settings_value' => 'Enabled',
                 'user_id'        => $user->id,
                 'status'         => 1,
@@ -222,8 +233,6 @@ class AdminChildUsersController extends Controller
                 'mobile'                  => 'required|string|max:20',
                 'company_name'            => 'nullable|string|max:255',
                 'address'                 => 'nullable|string',
-                'subscription_start_date' => 'nullable|date',
-                'subscription_end_date'   => 'nullable|date|after_or_equal:subscription_start_date',
             ];
             if ($request->filled('password')) {
                 $rules['password'] = 'string|min:6';
@@ -247,8 +256,7 @@ class AdminChildUsersController extends Controller
             $user->user_mobile             = $userMobile;
             $user->company_name            = $request->company_name;
             $user->address                 = $request->address;
-            $user->subscription_start_date = $request->subscription_start_date;
-            $user->subscription_end_date   = $request->subscription_end_date;
+
             if ($request->filled('password')) {
                 $user->password = bcrypt($request->password);
             }

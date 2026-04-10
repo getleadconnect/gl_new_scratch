@@ -11,17 +11,20 @@ use App\Models\Settings;
 use App\Models\PurchaseScratchHistory;
 use App\Models\ScratchCount;
 use Validator;
+use DB;
 
 use Carbon\Carbon;
 
 class UsersController extends Controller
 {
+    
     /**
      * Display the users list page.
      */
     public function index(): View
     {
-    $parent_users=User::where('role_id','admin')->where('status',1)->get();    
+    $parent_users=User::where('role_id',1)->where('status',1)->get();
+
     return view('admin.users.index', [
             'pageTitle' => 'Users Management',
             'parent_users'=>$parent_users
@@ -36,35 +39,38 @@ class UsersController extends Controller
         if ($request->ajax()) {
             $today = now()->toDateString();
 
-            $query = User::where('role_id', '!=', 0)->whereNull('deleted_at');
+            $query = User::select('users.*', 'parent.unique_id as parent_unique_id')
+                ->leftJoin('users as parent', 'users.parent_id', '=', 'parent.id')
+                ->where('users.role_id', '!=', 0)
+                ->whereNull('users.deleted_at');
 
             // Role filter
             if ($request->filled('filter_role')) {
-                $query->where('role_id', $request->filter_role);
+                $query->where('users.role_id', $request->filter_role);
             }
 
             // Status filter
             if ($request->filled('filter_status')) {
                 if ($request->filter_status === 'active') {
-                    $query->where('status', 1)
-                          ->whereNotNull('subscription_end_date')
-                          ->where('subscription_end_date', '>=', $today);
+                    $query->where('users.status', 1)
+                          ->whereNotNull('users.subscription_end_date')
+                          ->where('users.subscription_end_date', '>=', $today);
                 } elseif ($request->filter_status === 'expired') {
                     $query->where(function($q) use ($today) {
-                        $q->whereNull('subscription_end_date')
-                          ->orWhere('subscription_end_date', '<', $today);
+                        $q->whereNull('users.subscription_end_date')
+                          ->orWhere('users.subscription_end_date', '<', $today);
                     });
                 } elseif ($request->filter_status === 'inactive') {
-                    $query->where('status', 0);
+                    $query->where('users.status', 0);
                 }
             }
 
             // Date range filter (created_at)
             if ($request->filled('filter_date_from')) {
-                $query->whereDate('created_at', '>=', $request->filter_date_from);
+                $query->whereDate('users.created_at', '>=', $request->filter_date_from);
             }
             if ($request->filled('filter_date_to')) {
-                $query->whereDate('created_at', '<=', $request->filter_date_to);
+                $query->whereDate('users.created_at', '<=', $request->filter_date_to);
             }
 
             return DataTables::of($query)
@@ -72,7 +78,8 @@ class UsersController extends Controller
 
                 ->addColumn('name', function ($user) {
                     $url = route('admin.users.show', $user->id);
-                    return '<a href="'.$url.'" class="text-blue-600 hover:text-blue-900 hover:underline font-medium">'.$user->name.'</a>';
+                    return '<a href="'.$url.'" class="text-blue-600 hover:text-blue-900 hover:underline font-medium">'.strtoupper($user->name).'</a>';
+                         //.'<br><span style="font-size:13px;color:#6b7280;">'.$user->email.'</span>';
                 })
 
                 ->addColumn('created_date', function ($user) {
@@ -81,6 +88,12 @@ class UsersController extends Controller
 
                 ->addColumn('mobile', function ($user) {
                     return $user->country_code." ".$user->mobile;
+                })
+
+                ->addColumn('company_name', function ($user) {
+                    $company = $user->company_name ?: '--';
+                    $address = $user->address ? '<br><span style="font-size:13px;color:#6b7280;">' . $user->address . '</span>' : '';
+                    return $company . $address;
                 })
 
                 ->addColumn('role', function ($user) {
@@ -95,20 +108,34 @@ class UsersController extends Controller
                 })
 
                 ->editColumn('parent_id', function ($user) {
-                    return $user->parent_id != null ? $user->parent_id : "--";
+                    
+                    if($user->role_id==1)
+                    {    
+                        $url = route('admin.sub-users.index', $user->id);
+                        return '<a href="'.$url.'" id="btn-apply-filter"
+                            class="py-1 px-3 text-xs font-small rounded-md text-white"
+                            style="background:#18181b;border:none;cursor:pointer;white-space:nowrap;">
+                            Child Users
+                        </a>';
+                    }
+                    else
+                    {
+                        return $user->parent_unique_id ?? '--';
+                    }
+
                 })
 
                 ->filterColumn('name', function ($query, $keyword) {
-                    $query->where('name', 'like', "%{$keyword}%");
+                    $query->where('users.name', 'like', "%{$keyword}%");
                 })
                 ->filterColumn('email', function ($query, $keyword) {
-                    $query->where('email', 'like', "%{$keyword}%");
+                    $query->where('users.email', 'like', "%{$keyword}%");
                 })
                 ->filterColumn('unique_id', function ($query, $keyword) {
-                    $query->where('unique_id', 'like', "%{$keyword}%");
+                    $query->where('users.unique_id', 'like', "%{$keyword}%");
                 })
                 ->filterColumn('company_name', function ($query, $keyword) {
-                    $query->where('company_name', 'like', "%{$keyword}%");
+                    $query->where('users.company_name', 'like', "%{$keyword}%");
                 })
                 ->addColumn('status', function ($user) {
                     if ($user->status==1) {
@@ -141,20 +168,20 @@ class UsersController extends Controller
                 ->addColumn('action', function ($user) {
                     return '
                         <div class="flex items-center gap-2">
-                            <button class="text-blue-600 hover:text-blue-900" title="Edit" onclick="editUser('.$user->id.')">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <button class=" text-blue-600 hover:text-blue-900" title="Edit" onclick="editUser('.$user->id.')">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                 </svg>
                             </button>
-                            <button class="text-red-600 hover:text-red-900" title="Delete" onclick="deleteUser('.$user->id.')">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <button class=" text-red-600 hover:text-red-900" title="Delete" onclick="deleteUser('.$user->id.')">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                 </svg>
                             </button>
                         </div>
                     ';
                 })
-                ->rawColumns(['name','action','status','subscription'])
+                ->rawColumns(['name','company_name','action','status','subscription','parent_id'])
                 ->make(true);
         }
     }
@@ -172,12 +199,13 @@ class UsersController extends Controller
                 'mobile' => 'required|string|max:20',
                 'company_name' => 'nullable|string|max:255',
                 'address' => 'nullable|string',
-                'role' => 'required|string|in:superadmin,admin,user,manager',
+                'role' => 'required',
                 'password' => 'required|string|min:6',
                 'subscription_start_date' => 'required|date',
                 'subscription_end_date' => 'required|date|after_or_equal:subscription_start_date',
             ]);
 
+            $validatedData['parent_id']=$request->parent_id??null;
             // Check if user_mobile (country_code + mobile) already exists
             $userMobile = $validatedData['country_code'] . $validatedData['mobile'];
             $existingUser = User::where('user_mobile', $userMobile)->first();
@@ -199,6 +227,7 @@ class UsersController extends Controller
                 'company_name' => $validatedData['company_name'] ?? null,
                 'address' => $validatedData['address'] ?? null,
                 'role_id' => $validatedData['role'],
+                'parent_id' => $validatedData['parent_id']??null,
                 'password' => bcrypt($validatedData['password']),
                 'subscription_start_date' => $validatedData['subscription_start_date'],
                 'subscription_end_date' => $validatedData['subscription_end_date'],
@@ -214,7 +243,7 @@ class UsersController extends Controller
 
             // Create settings
             $sdata = [
-                'settings_type' => "scratch_otp_enabled",
+                'settings_type' => "otp_enabled",
                 'settings_value' => "Enabled",
                 'user_id' => $user_id,
                 'status' => 1,
@@ -244,6 +273,7 @@ class UsersController extends Controller
     /**
      * Get user data for editing.
      */
+
     public function edit($id)
     {
         try {
@@ -276,7 +306,7 @@ class UsersController extends Controller
                 'mobile' => 'required|string|max:20',
                 'company_name' => 'nullable|string|max:255',
                 'address' => 'nullable|string',
-                'role' => 'required|string|in:superadmin,admin,user,manager',
+                'role' => 'required',
                 'subscription_start_date' => 'required|date',
                 'subscription_end_date' => 'required|date|after_or_equal:subscription_start_date',
             ];
@@ -287,6 +317,8 @@ class UsersController extends Controller
             }
 
             $validatedData = $request->validate($validationRules);
+
+            $validatedData['parent_id']=$request->parent_id??null;
 
             // Check if user_mobile (country_code + mobile) already exists for another user
             $userMobile = $validatedData['country_code'] . $validatedData['mobile'];
@@ -311,6 +343,7 @@ class UsersController extends Controller
             $user->company_name = $validatedData['company_name'] ?? null;
             $user->address = $validatedData['address'] ?? null;
             $user->role_id = $validatedData['role'];
+            $user->parent_id = $validatedData['parent_id']??null;
             $user->subscription_start_date = $validatedData['subscription_start_date'];
             $user->subscription_end_date = $validatedData['subscription_end_date'];
 
@@ -452,7 +485,7 @@ class UsersController extends Controller
 						
 				$data=[
 					'user_id'=>$user_id,
-					'narration'=>"To purchase ". $request->scratch_count. " scratch count dated on ".date('d-m-Y'),
+					'narration'=>"To purchase ". $request->scratch_count. " scratch credits dated on ".date('d-m-Y'),
 					'scratch_count'=>$request->scratch_count,
 					'status'=>1
 				];
@@ -482,7 +515,7 @@ class UsersController extends Controller
                     DB::commit();
                     return response()->json([
                         'success' => true,
-                        'message' => 'Scratch count added successfully.',
+                        'message' => 'Scratch credit added successfully.',
                         'scratch_count' => $validatedData['scratch_count']
                     ]);
 
@@ -493,7 +526,7 @@ class UsersController extends Controller
                     
                     return response()->json([
                     'success' => false,
-                        'message' => 'Failed to add scratch count: ' . $e->getMessage()
+                        'message' => 'Failed to add scratch credit: ' . $e->getMessage()
                     ], 500);
         		}
 
@@ -502,7 +535,7 @@ class UsersController extends Controller
              DB::rollback();
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to add scratch count: ' . $e->getMessage()
+                'message' => 'Failed to add scratch credit: ' . $e->getMessage()
             ], 500);
         }
     }

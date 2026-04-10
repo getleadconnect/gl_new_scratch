@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ScratchCount;
+use App\Models\ScratchPackage;
 use App\Models\Campaign;
 use App\Models\ScratchCustomer;
 use Illuminate\Http\Request;
@@ -26,7 +27,7 @@ class UserDashboardController extends Controller
 
         // Campaign bar chart data
         $campaigns = Campaign::where('user_id', $userId)
-            ->whereNull('deleted_at')
+            ->whereNull('deleted_at')->where('status',1)
             ->get(['id', 'campaign_name']);
 
         $chartLabels = [];
@@ -44,6 +45,8 @@ class UserDashboardController extends Controller
                                 ->count();
         }
 
+        $scratchPackages = ScratchPackage::orderBy('id', 'ASC')->get();
+
         return view('user.dashboard', [
             'pageTitle'          => 'Dashboard',
             'totalCount'         => $scratchCount->total_count   ?? 0,
@@ -55,6 +58,7 @@ class UserDashboardController extends Controller
             'chartLabels'        => $chartLabels,
             'chartWin'           => $chartWin,
             'chartLoss'          => $chartLoss,
+            'scratchPackages'    => $scratchPackages,
         ]);
     }
 }

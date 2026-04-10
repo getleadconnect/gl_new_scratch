@@ -4,13 +4,14 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -75,9 +76,9 @@ class User extends Authenticatable
     public static function getUserId()
     {
         if(auth()->check()){
-            if (Auth::user()->int_role_id == User::USERS) {
+            if (Auth::user()->role_id == User::USERS) {
                 $vendorId = Auth::user()->id;
-            } elseif (Auth::user()->int_role_id == User::SHOPS) {
+            } elseif (Auth::user()->role_id == User::SHOPS) {
                 $vendorId = Auth::user()->parent_id;
             } else {
                 $vendorId = Auth::user()->id;
@@ -87,6 +88,7 @@ class User extends Authenticatable
             return null;
         }
     }
+
     public static function getUserIdApi($userId)
     {
         $user = User::select('id','role_id','parent_id')->find($userId);

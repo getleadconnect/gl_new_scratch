@@ -357,8 +357,8 @@ class ScratchLinksController extends Controller
                         $imgUrl = asset('uploads/' . $row->qrcode_file);
                         return '
                             <div style="display:flex;align-items:center;gap:6px;">
-                                <a href="' . $imgUrl . '" target="_blank" title="View QR Code">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="1.5">
+                                <a href="' . $imgUrl . '" target="_blank" title="View QR Code" class="act-button">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="1.5">
                                         <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
                                         <rect x="3" y="14" width="7" height="7" rx="1"/>
                                         <rect x="5" y="5" width="3" height="3" fill="#374151"/><rect x="16" y="5" width="3" height="3" fill="#374151"/>
@@ -367,8 +367,9 @@ class ScratchLinksController extends Controller
                                         <rect x="14" y="17" width="2" height="4" fill="#374151"/>
                                     </svg>
                                 </a>
-                                <a href="' . $imgUrl . '" download title="Download QR Code">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
+
+                                <a href="' . $imgUrl . '" download title="Download QR Code" class="act-button">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
                                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                                         <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
                                     </svg>
@@ -397,17 +398,17 @@ class ScratchLinksController extends Controller
                     $toggleTitle = $row->status == 1 ? 'Set Inactive' : 'Set Active';
                     return '
                         <div style="display:flex;gap:10px;align-items:center;">
-                            <span onclick="editLink(' . $row->id . ')" title="Edit" style="cursor:pointer;color:#374151;">
+                            <span  onclick="editLink(' . $row->id . ')" title="Edit" style="cursor:pointer;color:#374151;">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
                                 </svg>
                             </span>
-                            <span onclick="deleteLink(' . $row->id . ')" title="Delete" style="cursor:pointer;color:#dc2626;">
+                            <span  onclick="deleteLink(' . $row->id . ')" title="Delete" style="cursor:pointer;color:#dc2626;">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6m4-6v6"/><path d="M9 6V4h6v2"/>
                                 </svg>
                             </span>
-                            <span onclick="toggleStatus(' . $row->id . ', ' . $row->status . ')" title="' . $toggleTitle . '" style="cursor:pointer;color:' . $toggleColor . ';">
+                            <span  onclick="toggleStatus(' . $row->id . ', ' . $row->status . ')" title="' . $toggleTitle . '" style="cursor:pointer;color:' . $toggleColor . ';">
                                 ' . ($row->status == 1
                                     ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
                                     : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'
