@@ -15,7 +15,7 @@ use DB;
 
 use Carbon\Carbon;
 
-class ChildUsersController extends Controller
+class SuperAdminSubUsersController extends Controller
 {
     /**
      * Display the users list page.
@@ -26,6 +26,7 @@ class ChildUsersController extends Controller
     $parent_users=User::where('role_id',1)->where('status',1)->get();
     return view('admin.users.child_users', [
             'parent_users'=>$parent_users,
+            'admin_user'=>$parentUser,
             'parent_id' => $id,
             'parentName'=>$parentUser->name,
         ]);
@@ -39,7 +40,7 @@ class ChildUsersController extends Controller
         if ($request->ajax()) {
             $today = now()->toDateString();
 
-            $query = User::select('users.*','scratch_counts.balance_count')
+            $query = User::select('users.*','scratch_counts.total_count','scratch_counts.used_count','scratch_counts.balance_count')
             ->leftJoin('scratch_counts','users.id','=','scratch_counts.user_id')
             ->where('role_id', 3)->whereNull('deleted_at');
 
@@ -81,7 +82,14 @@ class ChildUsersController extends Controller
                     return $company . $address;
                 })
                 ->addColumn('scratch_count', function ($user) {
-                        return $user->balance_count;
+
+                        $tc=$user->total_count??0;
+                        $uc=$user->used_count??0;
+                        $bc=$user->balance_count??0;
+
+                        $scount="<table class='s-table'><tr><td>Total</td><td>Used</td><td>Balance</td></tr>
+                         <tr><td>".$tc."</td><td>".$uc."</td><td>".$bc."</td></tr></table>";
+                        return $scount;
                 })
 
                 ->editColumn('parent_id', function ($user) {
@@ -132,7 +140,7 @@ class ChildUsersController extends Controller
                         </div>
                     ';
                 })
-                ->rawColumns(['name','action','status','subscription','parent_id','company_name'])
+                ->rawColumns(['name','action','status','subscription','parent_id','company_name','scratch_count'])
                 ->make(true);
         }
     }

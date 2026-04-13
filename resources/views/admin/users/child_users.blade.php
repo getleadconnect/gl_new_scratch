@@ -76,6 +76,13 @@
     .iti__country.iti__highlight {
         background-color: #3b82f6;
     }
+
+.s-table tbody tr,td
+{
+    padding:5px 10px !important;
+    font-size:13px !important;
+}
+
 </style>
 @section('content')
 <div class="space-y-6">
@@ -108,11 +115,12 @@
         <!-- content here ------->
      <input type="hidden" id="admin_user_id" name="admin_user_id" value="{{$parent_id}}">
 
+     <p class="pl-4 pt-2" style="color:#5050e5;"> *: To apply subscription period and scratch credits to all child users</p>
+
      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Add Subscription Period Card -->
-                               
-
-                <div class="profile-card p-6">
+               
+                <div class="profile-card p-6 pt-2">
                     <h3 class="text-lg font-bold text-gray-900 mb-4">Add Subscription Period</h3>
                     <form id="subscriptionForm">
                         @csrf
@@ -137,7 +145,7 @@
                 </div>
 
                 <!-- Add Scratch Count Card -->
-                <div class="profile-card p-6">
+                <div class="profile-card p-6 pt-2">
                     <h3 class="text-lg font-bold text-gray-900 mb-4">Add Scratch Credits</h3>
                     <form id="scratchForm">
                         @csrf
@@ -207,6 +215,12 @@
         </div>
 
         <form id="addUserForm" class="p-6">
+
+
+            <!-- Subscription Start/End Date -->
+                    <input type="hidden" name="subscription_start_date" value="{{$admin_user->subscription_start_date}}" >
+                    <input type="hidden" name="subscription_end_date" value="{{$admin_user->subscription_end_date}}" >
+           
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <!-- Name -->
                 <div class="md:col-span-2">
@@ -269,18 +283,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Password <span class="text-red-500">*</span></label>
                     <input type="password" name="password" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
-                                
-                <!-- Subscription Start Date -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Subscription Start Date <span class="text-red-500">*</span></label>
-                    <input type="date" name="subscription_start_date" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                </div>
-
-                <!-- Subscription End Date -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Subscription End Date <span class="text-red-500">*</span></label>
-                    <input type="date" name="subscription_end_date" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                </div>
+                
             </div>
 
             <div class="mt-6 flex gap-3 justify-end">
@@ -374,7 +377,7 @@
                     <input type="password" name="password" id="editPassword" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
 
-                <!-- Subscription Start Date -->
+               {{-- <!-- Subscription Start Date -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Subscription Start Date <span class="text-red-500">*</span></label>
                     <input type="date" name="subscription_start_date" id="editSubscriptionStartDate" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
@@ -385,6 +388,8 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Subscription End Date <span class="text-red-500">*</span></label>
                     <input type="date" name="subscription_end_date" id="editSubscriptionEndDate" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
+                --}}
+
             </div>
 
             <div class="mt-6 flex gap-3 justify-end">

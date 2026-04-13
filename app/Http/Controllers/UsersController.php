@@ -307,8 +307,8 @@ class UsersController extends Controller
                 'company_name' => 'nullable|string|max:255',
                 'address' => 'nullable|string',
                 'role' => 'required',
-                'subscription_start_date' => 'required|date',
-                'subscription_end_date' => 'required|date|after_or_equal:subscription_start_date',
+                //'subscription_start_date' => 'required|date',
+                //'subscription_end_date' => 'required|date|after_or_equal:subscription_start_date',
             ];
 
             // Only validate password if it's provided
@@ -344,8 +344,8 @@ class UsersController extends Controller
             $user->address = $validatedData['address'] ?? null;
             $user->role_id = $validatedData['role'];
             $user->parent_id = $validatedData['parent_id']??null;
-            $user->subscription_start_date = $validatedData['subscription_start_date'];
-            $user->subscription_end_date = $validatedData['subscription_end_date'];
+            //$user->subscription_start_date = $validatedData['subscription_start_date'];
+            //$user->subscription_end_date = $validatedData['subscription_end_date'];
 
             // Only update password if provided
             if ($request->filled('password')) {
@@ -400,13 +400,19 @@ class UsersController extends Controller
     public function show($id): View
     {
         $user = User::findOrFail($id);
-    
-        $scratch_bal=ScratchCount::where('user_id',$user->id)->pluck('balance_count')->first();
+
+        $scratchCount = ScratchCount::where('user_id', $user->id)->first();
+        $childUsersCount = User::where('parent_id', $user->id)->whereNull('deleted_at')->count();
 
         return view('admin.users.show', [
             'pageTitle' => 'User Profile',
             'user' => $user,
-            'scratch_count'=>$scratch_bal
+            'scratch_count' => $scratchCount->balance_count ?? 0,
+            'total_scratch' => $scratchCount->total_count ?? 0,
+            'used_scratch' => $scratchCount->used_count ?? 0,
+            'balance_scratch' => $scratchCount->balance_count ?? 0,
+            'user_role_id'=>$user->role_id,
+            'child_users_count' => $childUsersCount,
         ]);
     }
 
@@ -427,7 +433,29 @@ class UsersController extends Controller
             $user->subscription_end_date = $validatedData['subscription_end_date'];
             $user->save();
 
-        	$sc=ScratchCount::where('user_id',$user_id)->first();
+            /* --- apply subscription period to child users ---- */
+            $childUsers=User::where('parent_id',$user->id)->get();
+            if($childUsers)
+            {
+                foreach($childUsers as $user)
+                {
+                   $user->subscription_start_date = $validatedData['subscription_start_date'];
+                   $user->subscription_end_date = $validatedData['subscription_end_date'];
+                   $user->save();
+                }
+            }
+            /*-----------------------*/
+
+            //This is child user, Then update same period as parent(admin) user subscription period.
+            if($user->role_id==3)
+            {
+                  $parentUser=User::where('id',$user->parent_id)->first();
+                  $parentUser->subscription_start_date = $validatedData['subscription_start_date'];
+                  $parentUser->subscription_end_date = $validatedData['subscription_end_date'];
+                  $parentUser->save();
+            }
+            
+        	$sc=ScratchCount::where('user_id',$user->id)->first();
 			if($sc)
 			{
 				$sc->total_count=0;
@@ -438,7 +466,7 @@ class UsersController extends Controller
 			else
 			{
 				$dat=[
-				  'user_id'=>$user_id,
+				  'user_id'=>$user->id,
 				  'total_count'=>0,
 				  'used_count'=>0,
 				  'balance_count'=>0,

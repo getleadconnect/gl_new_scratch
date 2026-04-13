@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Settings;
 use App\Models\ScratchCount;
+use App\Models\ScratchPackage;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Yajra\DataTables\Facades\DataTables;
@@ -23,7 +24,7 @@ class AdminChildUsersController extends Controller
         return view('admin.child-users.index', [
             'pageTitle' => 'Users',
             'parentName'=>$parentUser->name,
-        ]);
+          ]);
     }
 
     /**
@@ -104,8 +105,8 @@ class AdminChildUsersController extends Controller
                     return $dt;
                 })
                 ->addColumn('credits', function ($user) {
-                    
-                    return $user->balance_count??0;
+                    $balance = (int) ($user->balance_count ?? 0);
+                    return '<span style="color:#22c55e;font-weight:600;">' . number_format($balance) . '</span>';
                 })
 
                 ->addColumn('action', function ($user) {
@@ -136,7 +137,7 @@ class AdminChildUsersController extends Controller
                 ->filterColumn('company_name', function ($q, $keyword) {
                     $q->where('company_name', 'like', "%{$keyword}%");
                 })
-                ->rawColumns(['name', 'action', 'status', 'subscription'])
+                ->rawColumns(['name', 'action', 'status', 'subscription', 'credits'])
                 ->make(true);
         }
     }
@@ -273,6 +274,27 @@ class AdminChildUsersController extends Controller
     /**
      * Delete a child user.
      */
+    /**
+     * Display the purchase credits page with child users list.
+     */
+    public function purchaseCredits(): View
+    {
+        $adminId = auth()->user()->id;
+        $childUsers = User::select('users.*', 'scratch_counts.balance_count')
+            ->leftJoin('scratch_counts', 'users.id', '=', 'scratch_counts.user_id')
+            ->where('users.role_id', 3)
+            ->where('users.parent_id', $adminId)
+            ->whereNull('users.deleted_at')
+            ->get();
+        $scratchPackages = ScratchPackage::orderBy('id', 'ASC')->get();
+
+        return view('admin.child-users.purchase-credits', [
+            'pageTitle' => 'Purchase Credits',
+            'childUsers' => $childUsers,
+            'scratchPackages' => $scratchPackages,
+        ]);
+    }
+
     public function destroy($id)
     {
         try {

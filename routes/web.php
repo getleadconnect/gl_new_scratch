@@ -20,7 +20,7 @@ use App\Http\Controllers\GeneralOptionsController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\UsersController;
-use App\Http\Controllers\ChildUsersController;
+use App\Http\Controllers\SuperAdminSubUsersController;
 use App\Http\Controllers\ScratchPackageController;
 use App\Http\Controllers\ScratchPurchaseController;
 use App\Http\Controllers\PaymentController;
@@ -62,10 +62,16 @@ Route::middleware(['auth', 'superadmin'])->prefix('admin')->name('admin.')->grou
     // Admin child users (role_id 1 — manage role_id 3 users)
     Route::get('/child-users',              [AdminChildUsersController::class, 'index'])->name('child-users.index');
     Route::get('/child-users/data',         [AdminChildUsersController::class, 'getData'])->name('child-users.data');
+    Route::get('/purchase-scratch-credits', [AdminChildUsersController::class, 'purchaseCredits'])->name('purchase-scratch-credits');
     Route::post('/child-users',             [AdminChildUsersController::class, 'store'])->name('child-users.store');
     Route::get('/child-users/{id}/edit',    [AdminChildUsersController::class, 'edit'])->name('child-users.edit');
     Route::put('/child-users/{id}',         [AdminChildUsersController::class, 'update'])->name('child-users.update');
     Route::delete('/child-users/{id}',      [AdminChildUsersController::class, 'destroy'])->name('child-users.destroy');
+
+    // Admin purchase credits for child users
+    Route::post('/purchase/create-order',   [ScratchPurchaseController::class, 'adminCreateOrder'])->name('child-users.purchase.create-order');
+    Route::post('/purchase/verify-payment', [ScratchPurchaseController::class, 'adminVerifyPayment'])->name('child-users.purchase.verify-payment');
+
 
     // Admin profile routes (accessible by both superadmin and admin)
     Route::get('/profile',          [AdminProfileController::class, 'index'])->name('profile');
@@ -97,11 +103,11 @@ Route::middleware(['auth', 'superadmin'])->prefix('admin')->name('admin.')->grou
         Route::post('/users/{id}/subscription', [UsersController::class, 'addSubscription'])->name('users.addSubscription');
         Route::post('/users/{id}/scratch', [UsersController::class, 'addScratch'])->name('users.addScratch');
         Route::get('/users/{id}/scratch-history', [UsersController::class, 'getScratchHistory'])->name('users.scratchHistory');
-        Route::get('/sub-users/data', [ChildUsersController::class, 'getChildUsersData'])->name('sub-users.data');
-        Route::get('/sub-users/{id}', [ChildUsersController::class, 'index'])->name('sub-users.index');
-
-        Route::post('/multi-users/subscription', [ChildUsersController::class, 'addSubscription'])->name('sub-users.addSubscription');
-        Route::post('/multi-users/scratch', [ChildUsersController::class, 'addScratch'])->name('sub-users.addScratch');
+        
+        Route::get('/sub-users/data', [SuperAdminSubUsersController::class, 'getChildUsersData'])->name('sub-users.data');
+        Route::get('/sub-users/{id}', [SuperAdminSubUsersController::class, 'index'])->name('sub-users.index');
+        Route::post('/multi-users/subscription', [SuperAdminSubUsersController::class, 'addSubscription'])->name('sub-users.addSubscription');
+        Route::post('/multi-users/scratch', [SuperAdminSubUsersController::class, 'addScratch'])->name('sub-users.addScratch');
 
         // Scratch Rate (Packages)
         Route::get('/scratch-rate',         [ScratchPackageController::class, 'index'])->name('scratch-rate.index');
@@ -174,6 +180,9 @@ Route::middleware(['auth', 'userrole'])->prefix('user')->name('user.')->group(fu
     Route::post('/settings/general/crm-token',     [GeneralOptionsController::class, 'updateCrmToken'])->name('settings.general.crm-token');
     Route::post('/settings/general/remove-crm',    [GeneralOptionsController::class, 'removeCrmToken'])->name('settings.general.remove-crm');
     Route::post('/settings/general/toggle-crm',    [GeneralOptionsController::class, 'toggleCrm'])->name('settings.general.toggle-crm');
+
+    // Settings – Purchase Credits
+    Route::get('/settings/purchase-credits', [ScratchPurchaseController::class, 'index'])->name('settings.purchase-credits');
 
     // Settings – Logo & Favicon routes
     Route::get('/settings/logo-favicon',          [LogoFaviconController::class, 'index'])->name('settings.logo-favicon');

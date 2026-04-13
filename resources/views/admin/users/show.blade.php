@@ -80,6 +80,8 @@
     {
         color:#ff0000b8;
     }
+
+
 </style>
 
 @section('content')
@@ -159,6 +161,18 @@
 
                         </span>
                     </div>
+
+                    @if($user_role_id==1)
+                        <div class="info-row" style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex;">
+                                <span class="info-label">No of child users:</span>
+                                <span class="info-value font-medium font-weight-900">{{ $child_users_count }}</span>
+                            </div>
+                            <a href="{{ route('admin.sub-users.index', $user->id) }}" class="inline-flex items-center justify-center rounded-md text-xs font-medium text-white hover:opacity-90" style="background:#18181b; padding: 5px 12px; white-space: nowrap;">
+                                View Child Users
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -212,7 +226,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Add Subscription Period Card -->
                 <div class="profile-card p-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">Add Subscription Period</h3>
+                    
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Subscription Period</h3>
                     <form id="subscriptionForm">
                         @csrf
                         <div class="space-y-4">
@@ -236,6 +251,7 @@
                 </div>
 
                 <!-- Add Scratch Count Card -->
+                 @if($user_role_id!=1)
                 <div class="profile-card p-6">
                     <h3 class="text-lg font-bold text-gray-900 mb-4">Add Scratch Credits</h3>
                     <form id="scratchForm">
@@ -253,7 +269,29 @@
                         </div>
                     </form>
                 </div>
+                @endif
             </div>
+
+            @if($user_role_id!=1)
+            <!-- Scratch Count Stats -->
+            <div class="profile-card p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Scratch Credits Overview</h3>
+                <div style="display: flex; gap: 16px;">
+                    <div style="flex: 1; text-align: center; padding: 16px; border-radius: 8px; background-color: #f0f5ff; border: 1px solid #dbeafe;">
+                        <p style="font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">Total Scratch</p>
+                        <p style="font-size: 30px; font-weight: 700; color: #3b82f6;">{{ $total_scratch }}</p>
+                    </div>
+                    <div style="flex: 1; text-align: center; padding: 16px; border-radius: 8px; background-color: #fef3f2; border: 1px solid #fecaca;">
+                        <p style="font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">Used Scratch</p>
+                        <p style="font-size: 30px; font-weight: 700; color: #ef4444;">{{ $used_scratch }}</p>
+                    </div>
+                    <div style="flex: 1; text-align: center; padding: 16px; border-radius: 8px; background-color: #ecfdf5; border: 1px solid #bbf7d0;">
+                        <p style="font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">Balance Scratch</p>
+                        <p style="font-size: 30px; font-weight: 700; color: #22c55e;">{{ $balance_scratch }}</p>
+                    </div>
+                </div>
+            </div>
+            @endif
 
             <!-- Second Row: Full Width (100%) Purchase History -->
             <div class="profile-card p-6">
@@ -262,7 +300,7 @@
                     <table id="scratch-history-table" class="w-full">
                         <thead>
                             <tr>
-                                <th>Sl No</th>
+                                <th>SlNo</th>
                                 <th>Date</th>
                                 <th>Narration</th>
                                 <th>Count</th>
