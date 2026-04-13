@@ -215,10 +215,8 @@ Route::middleware(['auth', 'userrole'])->prefix('user')->name('user.')->group(fu
 
 // Scrtach web routes -------------------------------------------------------------------------------------------->
 
-
-//Route::domain(env('SHORT_LINK_DOMAIN'))->group(function () {
-
-/*Route::get('{id}/{code}', 'App\Http\Controllers\Shortener\GlScratchWebController@index')->name('shorter-link');
+  Route::domain(env('SHORT_LINK_DOMAIN'))->group(function () {
+    Route::get('{id}/{code}', 'App\Http\Controllers\Shortener\GlScratchWebController@index')->name('shorter-link');
 
     Route::get('scratch-form', 'App\Http\Controllers\Shortener\GlScratchWebController@form');
     Route::get('scratch/terms', 'App\Http\Controllers\Shortener\GlScratchWebController@terms')->name('shorter-link.terms');
@@ -232,7 +230,7 @@ Route::middleware(['auth', 'userrole'])->prefix('user')->name('user.')->group(fu
     Route::get('wa/{code}', 'App\Http\Controllers\Shortener\GlScratchWebController@gotoApiScratch')->name('go-to-api-scratch');
 
 	Route::get('sc/get-branch-autocomplete/{user_id}', 'App\Http\Controllers\Shortener\GlScratchWebController@getBranchAutocomplete')->name('get-branch-autocomplete');
-*/
-  //  });
+
+ });
 
 
