@@ -9,13 +9,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('scratch_counts', function (Blueprint $table) {
-            $table->integer('id')->autoIncrement()->primary();
-            $table->integer('user_id')->index();
+            $table->integer('id', true);
+            $table->integer('user_id');
             $table->integer('total_count')->nullable();
             $table->integer('used_count')->nullable();
             $table->integer('balance_count')->nullable();
-            $table->dateTime('created_at')->useCurrent();
-            $table->dateTime('updated_at')->useCurrent()->useCurrentOnUpdate();
+            $table->datetime('created_at')->useCurrent();
+            $table->datetime('updated_at')->useCurrent();
+
+            $table->index('id', 'id');
+            $table->index('user_id', 'fk_int_user_id');
         });
     }
 

@@ -10,10 +10,15 @@ return new class extends Migration
     {
         Schema::create('branches', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->index();
-            $table->string('branch_name');
-            $table->tinyInteger('status')->default(1);
+            $table->unsignedBigInteger('user_id');
+            $table->string('branch_name', 255);
+            $table->tinyInteger('status')->default(1)->comment('1=Active, 0=Inactive');
             $table->timestamps();
+
+            $table->foreign('user_id', 'branches_user_id_foreign')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('cascade');
         });
     }
 

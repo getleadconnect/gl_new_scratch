@@ -9,13 +9,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('purchase_scratch_history', function (Blueprint $table) {
-            $table->integer('id')->autoIncrement()->primary();
-            $table->integer('user_id')->index();
+            $table->integer('id', true);
+            $table->integer('user_id');
             $table->string('narration', 500);
             $table->integer('scratch_count');
             $table->tinyInteger('status')->default(0);
-            $table->dateTime('created_at')->useCurrent();
-            $table->dateTime('updated_at')->useCurrent()->useCurrentOnUpdate();
+            $table->datetime('created_at')->useCurrent();
+            $table->datetime('updated_at')->useCurrent();
+
+            $table->index('id', 'id');
+            $table->index('user_id', 'user_id');
         });
     }
 

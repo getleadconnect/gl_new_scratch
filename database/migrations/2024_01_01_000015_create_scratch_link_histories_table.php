@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('scratch_link_histories', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('scratch_link_id')->nullable();
-            $table->dateTime('date')->nullable();
+            $table->datetime('date')->nullable();
             $table->string('ip_address', 45)->nullable();
             $table->string('mac_address', 17)->nullable();
             $table->string('device', 191)->nullable();
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('country_code', 191)->nullable();
             $table->string('continent', 191)->nullable();
             $table->string('latitude', 191)->nullable();
-            $table->string('logitude', 191)->nullable(); // keeping original typo
+            $table->string('logitude', 191)->nullable();
             $table->string('currency', 191)->nullable();
             $table->string('timezone', 191)->nullable();
             $table->softDeletes();

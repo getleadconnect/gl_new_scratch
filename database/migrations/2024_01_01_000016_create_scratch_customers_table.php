@@ -23,15 +23,15 @@ return new class extends Migration
             $table->string('short_code', 50)->nullable();
             $table->string('bill_no', 191)->nullable();
             $table->tinyInteger('win_status')->nullable();
-            $table->tinyInteger('redeem')->nullable();
+            $table->boolean('redeem')->nullable();
             $table->unsignedBigInteger('branch_id')->nullable();
-            $table->tinyInteger('type_id')->nullable();
+            $table->boolean('type_id')->nullable();
             $table->tinyInteger('status')->nullable();
-            $table->string('redeem_source', 100)->nullable();
-            $table->dateTime('redeemed_on')->nullable();
-            $table->integer('redeemed_agent')->nullable();
             $table->softDeletes();
             $table->timestamps();
+            $table->string('redeem_source', 100)->nullable();
+            $table->datetime('redeemed_on')->nullable();
+            $table->integer('redeemed_agent')->nullable();
         });
     }
 

@@ -9,10 +9,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('roles', function (Blueprint $table) {
-            $table->integer('id')->autoIncrement()->primary();
+            $table->integer('id', true);
             $table->string('role', 50)->nullable();
-            $table->dateTime('created_at')->nullable()->useCurrent();
-            $table->dateTime('updated_at')->nullable()->useCurrent()->useCurrentOnUpdate();
+            $table->datetime('created_at')->useCurrent();
+            $table->datetime('updated_at')->useCurrent();
         });
     }
 

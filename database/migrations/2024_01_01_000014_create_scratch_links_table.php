@@ -18,12 +18,12 @@ return new class extends Migration
             $table->string('link_type', 50)->nullable();
             $table->string('qrcode_file', 100)->nullable();
             $table->text('url')->nullable();
-            $table->tinyInteger('bill_number_required')->nullable()->default(0);
-            $table->tinyInteger('email_required')->nullable();
-            $table->tinyInteger('branch_required')->nullable()->default(0);
-            $table->integer('click_count')->nullable()->default(0);
-            $table->tinyInteger('type')->nullable()->default(1);
-            $table->tinyInteger('status')->nullable();
+            $table->boolean('bill_number_required')->default(0);
+            $table->boolean('email_required')->nullable();
+            $table->boolean('branch_required')->default(0);
+            $table->integer('click_count')->default(0);
+            $table->tinyInteger('type')->default(1);
+            $table->boolean('status')->nullable();
             $table->bigInteger('link_count_section_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
