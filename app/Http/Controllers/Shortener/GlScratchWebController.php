@@ -93,7 +93,7 @@ class GlScratchWebController extends Controller
 				{
 					if( $offer->status!=1)
 					{
-						$messageText = "Oops!! This offer is inactive.";
+						$messageText = "Oops!! This offer is invalid.";
 						return view('gl-scratch-web.short-link.invalid',compact('messageText')); 
 					}
 					else
@@ -108,7 +108,7 @@ class GlScratchWebController extends Controller
 				}
 				else
 				{
-					$messageText = "Oops!! This link is Invalid.";
+					$messageText = "Oops!! This link is invalid.";
 					return view('gl-scratch-web.short-link.invalid',compact('messageText')); 
 				}
 				

@@ -3,16 +3,19 @@
 @section('content')
 <div class="kt-grid kt-grid--ver kt-grid--root kt-page">
     <div class="kt-grid kt-grid--hor kt-grid--root kt-login kt-login--v2 kt-login--signin" id="kt_login">
-      <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor"
-        style="background-image: url({{url('glscratch-web/assetsold/media/logos/Frame.png')}});">
+      <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+        <!--style="background-image: url({{url('glscratch-web/assetsold/media/logos/frame-1.png')}});"> -->
+        
         <div class="kt-grid__item kt-grid__item--fluid kt-login__wrapper">
           <div class="kt-login__container">
            
             <div class="kt-login__signin">
               <div class="kt-login__head">
-                <h2 class="kt-login__title" style="font-size: 28px;font-weight: bold;color:black">{{$messageText}}</h2>
-            </div>
-            <div class="kt-login__account"> <span class="kt-login__account-msg"> <a href="https://getlead.co.uk"
+                <h2 class="kt-login__title" style="font-size: 28px;font-weight: bold;color:black;text-align:center;">{{$messageText}}</h2>
+           
+                <img src="{{url('glscratch-web/assetsold/media/logos/frame-1.png')}}" style="width:100%;">
+            
+                <div class="kt-login__account"> <span class="kt-login__account-msg"> <a href="https://getlead.co.uk"
                   target="new"> Powered by GetLead</a> </span> </div>
           </div>
         </div>
