@@ -87,6 +87,11 @@ Route::middleware(['auth', 'superadmin'])->prefix('admin')->name('admin.')->grou
     Route::get('/gifts-list', [AdminGiftsListController::class, 'index'])->name('gifts-list.index');
     Route::get('/gifts-list/data', [AdminGiftsListController::class, 'getData'])->name('gifts-list.data');
 
+    // Admin purchase history (role_id 1 — child users' purchase history)
+    Route::get('/admin-purchase-history',      [PurchaseHistoryController::class, 'adminIndex'])->name('admin-purchase-history.index');
+    Route::get('/admin-purchase-history/data', [PurchaseHistoryController::class, 'adminGetData'])->name('admin-purchase-history.data');
+    Route::get('/admin-purchase-history/export',[PurchaseHistoryController::class, 'adminExport'])->name('admin-purchase-history.export');
+
     // Admin customers list (role_id 1 — child users' customers)
     Route::get('/customers', [AdminCustomersController::class, 'index'])->name('customers.index');
     Route::get('/customers/data', [AdminCustomersController::class, 'getData'])->name('customers.data');
@@ -211,6 +216,11 @@ Route::middleware(['auth', 'userrole'])->prefix('user')->name('user.')->group(fu
     Route::get('/redeem',           [RedeemController::class, 'index'])->name('redeem.index');
     Route::get('/redeem/search',    [RedeemController::class, 'search'])->name('redeem.search');
     Route::post('/redeem/now',      [RedeemController::class, 'redeemNow'])->name('redeem.now');
+
+    // Purchase History routes
+    Route::get('/purchase-history',        [PurchaseHistoryController::class, 'userIndex'])->name('purchase-history.index');
+    Route::get('/purchase-history/data',   [PurchaseHistoryController::class, 'userGetData'])->name('purchase-history.data');
+    Route::get('/purchase-history/export', [PurchaseHistoryController::class, 'userExport'])->name('purchase-history.export');
 
     // Customers routes
     Route::get('/customers',        [CustomersController::class, 'index'])->name('customers.index');

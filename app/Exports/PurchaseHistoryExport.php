@@ -13,12 +13,14 @@ class PurchaseHistoryExport implements FromCollection, WithHeadings, WithMapping
     protected ?int $userId;
     protected ?string $dateFrom;
     protected ?string $dateTo;
+    protected ?int $parentId;
 
-    public function __construct(?int $userId = null, ?string $dateFrom = null, ?string $dateTo = null)
+    public function __construct(?int $userId = null, ?string $dateFrom = null, ?string $dateTo = null, ?int $parentId = null)
     {
         $this->userId   = $userId;
         $this->dateFrom = $dateFrom;
         $this->dateTo   = $dateTo;
+        $this->parentId = $parentId;
     }
 
     public function collection()
@@ -32,8 +34,13 @@ class PurchaseHistoryExport implements FromCollection, WithHeadings, WithMapping
                 'users.mobile as user_mobile'
             )
             ->join('users', 'purchase_scratch_history.user_id', '=', 'users.id')
-            ->whereIn('users.role_id', [2, 3])
             ->whereNull('users.deleted_at');
+
+        if ($this->parentId) {
+            $query->where('users.role_id', 3)->where('users.parent_id', $this->parentId);
+        } else {
+            $query->whereIn('users.role_id', [2, 3]);
+        }
 
         if ($this->dateFrom) {
             $query->whereDate('purchase_scratch_history.created_at', '>=', $this->dateFrom);
