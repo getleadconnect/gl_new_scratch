@@ -167,7 +167,7 @@ class RegisterController extends Controller
             $sdata = [
                 'settings_type' => "otp_enabled",
                 'settings_value' => "Enabled",
-                'user_id' => $user_id,
+                'user_id' => $user->id,
                 'status' => 1,
             ];
 
@@ -183,6 +183,7 @@ class RegisterController extends Controller
                 'user_id'       => $user->id,
                 'narration'     => 'Purchased ' . number_format($scratchCount) . ' scratches via Razorpay on ' . date('d-m-Y'),
                 'scratch_count' => $scratchCount,
+                'amount'        =>$amount,
                 'status'        => 1,
             ]);
 
@@ -211,7 +212,9 @@ class RegisterController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            \Log::info($e->getMessage());
             DB::rollBack();
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Registration failed. Please contact support.',
