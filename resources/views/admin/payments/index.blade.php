@@ -8,7 +8,7 @@
     <!-- Page Header -->
     <div id="pay-page-header" class="flex items-center justify-between">
         <div>
-            <h1 class="text-3xl font-bold text-foreground">{{ $pageTitle }}</h1>
+            <h1 class="text-3xl font-bold text-foreground">{{ $pageTitle }} <span style="font-size:14px;">(Online Only)</span> </h1>
             <p class="mt-2 text-sm text-muted-foreground">View all payment transactions</p>
         </div>
     </div>

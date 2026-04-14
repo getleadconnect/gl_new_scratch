@@ -503,8 +503,14 @@ class UsersController extends Controller
 
 				$user_id=$user->id;
 				
-				$sc=PurchaseScratchHistory::where('user_id',$user_id)->latest()->first();
-				
+				$package=ScratchPackage::where('scratch_count',$scratch_count)->first();
+                $amount=0;
+                if($package)
+                {
+                        $amount=$package->total_amount;
+                }
+
+                $sc=PurchaseScratchHistory::where('user_id',$user_id)->latest()->first();
 				if($sc)
 				{
 					$sc->status=0;
@@ -515,6 +521,7 @@ class UsersController extends Controller
 					'user_id'=>$user_id,
 					'narration'=>"To purchase ". $request->scratch_count. " scratch credits dated on ".date('d-m-Y'),
 					'scratch_count'=>$request->scratch_count,
+                    'amount'=>$amount,
 					'status'=>1
 				];
 				

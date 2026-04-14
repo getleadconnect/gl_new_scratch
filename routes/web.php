@@ -24,6 +24,7 @@ use App\Http\Controllers\SuperAdminSubUsersController;
 use App\Http\Controllers\ScratchPackageController;
 use App\Http\Controllers\ScratchPurchaseController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PurchaseHistoryController;
 use App\Http\Controllers\LogoFaviconController;
 use Illuminate\Support\Facades\Route;
 
@@ -116,6 +117,11 @@ Route::middleware(['auth', 'superadmin'])->prefix('admin')->name('admin.')->grou
         Route::get('/scratch-rate/{id}/edit', [ScratchPackageController::class, 'edit'])->name('scratch-rate.edit');
         Route::put('/scratch-rate/{id}',    [ScratchPackageController::class, 'update'])->name('scratch-rate.update');
         Route::delete('/scratch-rate/{id}', [ScratchPackageController::class, 'destroy'])->name('scratch-rate.destroy');
+
+        // Purchase History routes
+        Route::get('/purchase-history',      [PurchaseHistoryController::class, 'index'])->name('purchase-history.index');
+        Route::get('/purchase-history/data',   [PurchaseHistoryController::class, 'getData'])->name('purchase-history.data');
+        Route::get('/purchase-history/export', [PurchaseHistoryController::class, 'export'])->name('purchase-history.export');
 
         // Payments routes
         Route::get('/payments',        [PaymentController::class, 'index'])->name('payments.index');

@@ -13,6 +13,7 @@ return new class extends Migration
             $table->integer('user_id');
             $table->string('narration', 500);
             $table->integer('scratch_count');
+            $table->integer('amount')->default(0);
             $table->tinyInteger('status')->default(0);
             $table->datetime('created_at')->useCurrent();
             $table->datetime('updated_at')->useCurrent();

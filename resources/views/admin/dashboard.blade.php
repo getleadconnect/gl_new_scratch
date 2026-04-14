@@ -158,6 +158,46 @@
 
     </div>
 
+    <!-- Latest Registered Users -->
+    <div class="bg-white border border-border rounded-lg shadow-sm">
+        <div class="px-4 sm:px-5 py-3 border-b border-border flex items-center justify-between">
+            <h3 class="text-base font-semibold text-foreground">Latest Registered Users </h3>
+            <a href="{{ route('admin.users.index') }}" class="text-sm font-medium text-blue-600 hover:text-blue-800">View All</a>
+        </div>
+        <div class="p-4 sm:p-5 overflow-x-auto">
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                <thead>
+                    <tr>
+                        <th style="background:#f9fafb;padding:10px 12px;text-align:left;font-weight:600;color:#374151;border-bottom:1px solid #e5e7eb;">#</th>
+                        <th style="background:#f9fafb;padding:10px 12px;text-align:left;font-weight:600;color:#374151;border-bottom:1px solid #e5e7eb;">Unique ID</th>
+                        <th style="background:#f9fafb;padding:10px 12px;text-align:left;font-weight:600;color:#374151;border-bottom:1px solid #e5e7eb;">Name</th>
+                        <th style="background:#f9fafb;padding:10px 12px;text-align:left;font-weight:600;color:#374151;border-bottom:1px solid #e5e7eb;">Mobile</th>
+                        <th style="background:#f9fafb;padding:10px 12px;text-align:left;font-weight:600;color:#374151;border-bottom:1px solid #e5e7eb;">Company</th>
+                        <th style="background:#f9fafb;padding:10px 12px;text-align:left;font-weight:600;color:#374151;border-bottom:1px solid #e5e7eb;">Role</th>
+                        <th style="background:#f9fafb;padding:10px 12px;text-align:left;font-weight:600;color:#374151;border-bottom:1px solid #e5e7eb;">Registered On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($latestUsers as $index => $u)
+                    <tr style="border-bottom:1px solid #f3f4f6;">
+                        <td style="padding:10px 12px;color:#374151;">{{ $index + 1 }}</td>
+                        <td style="padding:10px 12px;color:#374151;">{{ $u->unique_id ?? '--' }}</td>
+                        <td style="padding:10px 12px;">
+                            <a href="{{ route('admin.users.show', $u->id) }}" class="text-blue-600 hover:underline font-medium">{{ strtoupper($u->name) }}</a>
+                        </td>
+                        <td style="padding:10px 12px;color:#374151;">{{ $u->country_code }} {{ $u->mobile }}</td>
+                        <td style="padding:10px 12px;color:#374151;">{{ $u->company_name ?? '--' }}</td>
+                        <td style="padding:10px 12px;color:#374151;">{{ $u->role_id == 2 ? 'User' : 'Child' }}</td>
+                        <td style="padding:10px 12px;color:#374151;">{{ $u->created_at ? $u->created_at->format('d-m-Y H:i') : '--' }}</td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="7" style="padding:20px;text-align:center;color:#9ca3af;">No users registered yet.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>

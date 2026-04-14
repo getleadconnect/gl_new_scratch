@@ -139,6 +139,7 @@ class ScratchPurchaseController extends Controller
                 'user_id'       => $userId,
                 'narration'     => 'Purchased ' . number_format($scratchCount) . ' scratches via Razorpay on ' . date('d-m-Y'),
                 'scratch_count' => $scratchCount,
+                'amount'        => $amount,
                 'status'        => 1,
             ]);
 
@@ -278,6 +279,7 @@ class ScratchPurchaseController extends Controller
                 'user_id'       => $userId,
                 'narration'     => 'Purchased ' . number_format($scratchCount) . ' scratches via Razorpay (Admin) on ' . date('d-m-Y'),
                 'scratch_count' => $scratchCount,
+                'amount'        => $amount,
                 'status'        => 1,
             ]);
 

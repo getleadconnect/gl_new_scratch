@@ -34,6 +34,12 @@ class SuperAdminDashboardController extends Controller
                             ->count();
         $totalScratch = ScratchCount::sum('total_count');
 
+        $latestUsers = User::whereIn('role_id', [2, 3])
+            ->whereNull('deleted_at')
+            ->orderBy('created_at', 'DESC')
+            ->limit(5)
+            ->get();
+
         // Monthly subscriptions (current year Jan-Dec)
         $currentYear = now()->year;
         $monthlyLabels = [];
@@ -83,6 +89,7 @@ class SuperAdminDashboardController extends Controller
             'trendLabels'    => $trendLabels,
             'trendActive'    => $trendActive,
             'trendExpired'   => $trendExpired,
+            'latestUsers'    => $latestUsers,
         ]);
     }
 
