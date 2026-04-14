@@ -76,13 +76,9 @@
     .iti__country.iti__highlight {
         background-color: #3b82f6;
     }
-
-.s-table tbody tr,td
-{
-    padding:5px 10px !important;
-    font-size:13px !important;
-}
-
+.s-table{ min-width:180px; }
+.s-table tbody tr,td {    padding:5px 10px !important;  font-size:13px !important; }
+.border-none{border:none;}
 </style>
 @section('content')
 <div class="space-y-6">
@@ -176,7 +172,7 @@
                 <table id="users-table" class="data-table w-full" style="width:100%">
                     <thead>
                         <tr>
-                            <th>Sl No</th>
+                            <th>SlNo</th>
                             <th>Unique_ID</th>
                             <th>Name</th>
                             <th>Email</th>
@@ -184,7 +180,9 @@
                             <th>Company</th>
                             <th>Role</th>
                             <th>Subscription</th>
-                            <th>Scratch Credits</th>
+                            <th>Scratch Credits
+                                <table class='s-table border-none' ><tr><td>Total</td><td>Used</td><td>Balance</td></tr></table>
+                            </th>
                             <th>Status</th>
                             <th>Created At</th>
                             <th>Actions</th>

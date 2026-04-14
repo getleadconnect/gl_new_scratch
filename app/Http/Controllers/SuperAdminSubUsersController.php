@@ -87,8 +87,10 @@ class SuperAdminSubUsersController extends Controller
                         $uc=$user->used_count??0;
                         $bc=$user->balance_count??0;
 
-                        $scount="<table class='s-table'><tr><td>Total</td><td>Used</td><td>Balance</td></tr>
-                         <tr><td>".$tc."</td><td>".$uc."</td><td>".$bc."</td></tr></table>";
+                        /*$scount="<table class='s-table'><tr><td>Total</td><td>Used</td><td>Balance</td></tr>
+                         <tr><td>".$tc."</td><td>".$uc."</td><td>".$bc."</td></tr></table>";*/
+                        $scount="<table class='s-table'><tr><td>".$tc."</td><td>".$uc."</td><td>".$bc."</td></tr></table>";
+
                         return $scount;
                 })
 
