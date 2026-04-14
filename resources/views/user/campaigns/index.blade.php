@@ -2,10 +2,52 @@
 
 <link rel="stylesheet" href="{{asset('assets/css/datatable.css')}}">
 
+
+<!-- Mobile responsive overrides -->
 <style>
+@media (max-width: 640px) {
+    /* Page header — stack title and button */
+    #camp-page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    #camp-page-header > button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Filters — full-width selects, inputs and buttons */
+    #camp-filter-fields {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    #camp-filter-fields > div {
+        width: 100%;
+    }
+    #camp-filter-fields select,
+    #camp-filter-fields input[type="date"] {
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+    #camp-filter-fields .flex.gap-2 {
+        flex-direction: column;
+    }
+    #applyFilters,
+    #resetFilters {
+        width: 100%;
+    }
+
+    /* DataTable — horizontal scroll */
+    #camp-datatable-wrap {
+        overflow-x: auto;
+    }
+   
+}
+
    .text-red-800 { color: red; }
    .bg-light-cyan { background-color: #dcfafcd9; }
-
+   .text-d-green {  color:#008756; }
 </style>
 
 @section('content')
@@ -98,7 +140,7 @@
             </div>
             <!-- Campaign Image -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Campaign Image</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Campaign Image (<500KB)- Size 400x400 pixels </label>
                 <input type="file" name="campaign_image" id="addCampaignImage" accept="image/*"
                        class="w-full text-sm text-gray-500 file:mr-2 file:py-1 file:px-3 file:rounded file:border file:border-gray-300 file:text-xs file:font-medium file:bg-white hover:file:bg-gray-50 cursor-pointer">
                 <div class="mt-2 flex items-center gap-2">
@@ -158,7 +200,7 @@
             </div>
             <!-- Campaign Image -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Campaign Image <span class="text-gray-400 text-xs">(leave blank to keep current)</span></label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Campaign Image (<500KB)- Size 400x400 pixels <br><span class="text-d-green text-xs">(leave blank to keep current)</span></label>
                 <input type="file" name="campaign_image" id="editCampaignImage" accept="image/*"
                        class="w-full text-sm text-gray-500 file:mr-2 file:py-1 file:px-3 file:rounded file:border file:border-gray-300 file:text-xs file:font-medium file:bg-white hover:file:bg-gray-50 cursor-pointer">
                 <div class="mt-2">
@@ -224,47 +266,7 @@
     </div>
 </div>
 
-<!-- Mobile responsive overrides -->
-<style>
-@media (max-width: 640px) {
-    /* Page header — stack title and button */
-    #camp-page-header {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-    }
-    #camp-page-header > button {
-        width: 100%;
-        justify-content: center;
-    }
 
-    /* Filters — full-width selects, inputs and buttons */
-    #camp-filter-fields {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    #camp-filter-fields > div {
-        width: 100%;
-    }
-    #camp-filter-fields select,
-    #camp-filter-fields input[type="date"] {
-        width: 100% !important;
-        box-sizing: border-box;
-    }
-    #camp-filter-fields .flex.gap-2 {
-        flex-direction: column;
-    }
-    #applyFilters,
-    #resetFilters {
-        width: 100%;
-    }
-
-    /* DataTable — horizontal scroll */
-    #camp-datatable-wrap {
-        overflow-x: auto;
-    }
-}
-</style>
 
 <!-- jQuery -->
 <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
@@ -320,18 +322,37 @@ $(document).ready(function () {
 
     // Add image preview
     $('#addCampaignImage').on('change', function () {
+
         const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                $('#addNoImageText').hide();
-                $('#addImagePreview').attr('src', e.target.result).removeClass('hidden');
-            };
-            reader.readAsDataURL(file);
-        } else {
-            $('#addImagePreview').addClass('hidden');
-            $('#addNoImageText').show();
+
+        const allowedExtensions = /\.(jpg|jpeg|jpe|png)$/i;
+        const maxSize = 500 * 1024; // 500 KB in bytes
+
+        if (!allowedExtensions.test(file.name)) {
+            alert('Invalid file type, Try again.');
+            this.value = '';
+            return;
         }
+
+        // Check file size
+        if (file.size > maxSize) {
+            alert('File size must be less than 500 KB.');
+            this.value = '';
+            return;
+        }
+
+        if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#addNoImageText').hide();
+                    $('#addImagePreview').attr('src', e.target.result).removeClass('hidden');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                $('#addImagePreview').addClass('hidden');
+                $('#addNoImageText').show();
+            }
+        
     });
 
     // Add Campaign Submit
@@ -369,6 +390,23 @@ $(document).ready(function () {
     // Edit image preview
     $('#editCampaignImage').on('change', function () {
         const file = this.files[0];
+
+        const allowedExtensions = /\.(jpg|jpeg|jpe|png)$/i;
+        const maxSize = 500 * 1024; // 500 KB in bytes
+
+        if (!allowedExtensions.test(file.name)) {
+            alert('Invalid file type, Try again.');
+            this.value = '';
+            return;
+        }
+
+        // Check file size
+        if (file.size > maxSize) {
+            alert('File size must be less than 500 KB.');
+            this.value = '';
+            return;
+        }
+
         if (file) {
             const reader = new FileReader();
             reader.onload = function (e) {
@@ -378,6 +416,7 @@ $(document).ready(function () {
             reader.readAsDataURL(file);
         }
     });
+
 
     // Edit Campaign Submit
     $('#editCampaignForm').on('submit', function (e) {
@@ -490,6 +529,11 @@ function showNotification(type, message) {
     $('body').append(el);
     setTimeout(() => el.fadeOut(300, () => el.remove()), 3000);
 }
+
+
+
+
+
 </script>
 
 @endsection

@@ -26,6 +26,10 @@
 .border{
     border:1px solid #c4c4c4 !important;
 }
+.text-d-green
+{
+    color:#008756;
+}
 
 </style>
 
@@ -37,7 +41,7 @@
     <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold text-foreground">Add Gifts</h1>
         <div class="flex items-center gap-2">
-            <a href="{{ route('user.campaigns.index') }}"
+            <a href="{{ url()->previous() }}"
                class="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-md hover:bg-primary/90 transition-colors">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -110,7 +114,7 @@
 
                         <!-- Image -->
                         <div>
-                            <label class="block text-sm font-medium text-muted-foreground mb-1">Image (Max: 500mb, Size 450x450)</label>
+                            <label class="block text-sm font-medium text-muted-foreground mb-1">Image (<b><500KB</b>)- Size 400x400 pixels</label>
                             <input type="file" name="image" id="image" accept="image/*"  required
                                    class="w-full text-sm text-muted-foreground file:mr-2 file:py-1 file:px-3 file:rounded file:border file:border-input file:text-sm file:font-medium file:bg-background file:text-foreground hover:file:bg-accent cursor-pointer">
                         </div>
@@ -195,9 +199,13 @@
                 </select>
             </div>
             <div>
-                <label class="block text-sm font-medium text-foreground mb-1">Image (optional)</label>
+                <label class="block text-sm font-medium text-foreground mb-1">Image (<b> <500KB</b>)- Size 400x400 pixels <br><span class="text-d-green text-xs">(leave blank to keep current)</span></label>
                 <input type="file" name="image" id="editImage" accept="image/*"
                        class="w-full text-sm text-muted-foreground file:mr-2 file:py-1 file:px-3 file:rounded file:border file:border-input file:text-sm file:font-medium file:bg-background file:text-foreground hover:file:bg-accent cursor-pointer">
+            <div class="mt-2">
+                    <img id="editImagePreview" src="" alt="Current Image" class="h-14 w-14 object-cover rounded border border-gray-200 hidden">
+                    <div id="editNoImageText" class="h-14 w-14 bg-gray-100 border border-gray-200 rounded flex items-center justify-center text-xs text-gray-400">No Image</div>
+                </div>
             </div>
             <div class="flex gap-3 justify-end pt-2">
                 <button type="button" id="cancelEditGift"
@@ -288,6 +296,23 @@ $(document).ready(function () {
     // Image preview
     $('#image').on('change', function () {
         const file = this.files[0];
+
+        const allowedExtensions = /\.(jpg|jpeg|jpe|png)$/i;
+        const maxSize = 500 * 1024; // 500 KB in bytes
+
+        if (!allowedExtensions.test(file.name)) {
+            alert('Invalid file type, Try again.');
+            this.value = '';
+            return;
+        }
+
+        // Check file size
+        if (file.size > maxSize) {
+            alert('File size must be less than 500 KB.');
+            this.value = '';
+            return;
+        }
+
         if (file) {
             const reader = new FileReader();
             reader.onload = function (e) {
@@ -300,6 +325,37 @@ $(document).ready(function () {
             $('#no-image-text').show();
         }
     });
+
+    // Edit image preview
+    $('#editImage').on('change', function () {
+        const file = this.files[0];
+
+        const allowedExtensions = /\.(jpg|jpeg|jpe|png)$/i;
+        const maxSize = 500 * 1024; // 500 KB in bytes
+
+        if (!allowedExtensions.test(file.name)) {
+            alert('Invalid file type, Try again.');
+            this.value = '';
+            return;
+        }
+
+        // Check file size
+        if (file.size > maxSize) {
+            alert('File size must be less than 500 KB.');
+            this.value = '';
+            return;
+        }
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                $('#editNoImageText').hide();
+                $('#editImagePreview').attr('src', e.target.result).removeClass('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
 
     // Add Gift Submit
     $('#addGiftForm').on('submit', function (e) {
@@ -356,6 +412,16 @@ function editGift(id) {
             $('#editDescription').val(g.description);
             $('#editStatus').val(g.status);
             $('#editGiftModal').removeClass('hidden');
+
+            // Show existing image if any
+            if (g.gift_image) {
+                $('#editNoImageText').hide();
+                $('#editImagePreview').attr('src', '/uploads/' + g.gift_image).removeClass('hidden');
+            } else {
+                $('#editImagePreview').addClass('hidden');
+                $('#editNoImageText').show();
+            }
+
         } else {
             showNotification('error', response.message);
         }
