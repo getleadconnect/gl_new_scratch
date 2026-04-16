@@ -234,11 +234,11 @@
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-                                    <input type="date" name="subscription_start_date" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <input type="date" name="subscription_start_date"  id="subscriptionStartDate" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-                                    <input type="date" name="subscription_end_date" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <input type="date" name="subscription_end_date" id="subscriptionEndDate" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 </div>
                             </div>
                             <div class="flex justify-end">
@@ -436,6 +436,24 @@ $(document).ready(function() {
         }, 3000);
     }
 });
+
+$("#subscriptionStartDate").change(function()
+{
+    let date = new Date($(this).val()); // current date
+    date.setFullYear(date.getFullYear() + 1);
+    console.log(date);
+
+    let year = date.getFullYear();
+    let month = String(date.getMonth() + 1).padStart(2, '0');
+    let day = String(date.getDate()-1).padStart(2, '0');
+
+    let newDate=`${year}-${month}-${day}`;
+
+    $("#subscriptionEndDate").val(newDate);
+
+})
+
+
 </script>
 
 @endsection

@@ -111,12 +111,14 @@
         <!-- content here ------->
      <input type="hidden" id="admin_user_id" name="admin_user_id" value="{{$parent_id}}">
 
-     <p class="pl-4 pt-2" style="color:#5050e5;"> *: To apply subscription period and scratch credits to all child users</p>
 
      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Add Subscription Period Card -->
                
                 <div class="profile-card p-6 pt-2">
+
+                <p class="pl-2 pt-2" style="color:#5050e5;"> *: To apply subscription period to all child users.
+                    And reset scratch credits to 0 values.</p>
                     <h3 class="text-lg font-bold text-gray-900 mb-4">Add Subscription Period</h3>
                     <form id="subscriptionForm">
                         @csrf
@@ -142,6 +144,9 @@
 
                 <!-- Add Scratch Count Card -->
                 <div class="profile-card p-6 pt-2">
+
+                <p class="pl-2 pt-2" style="color:#5050e5;"> *: To apply scratch credits to all child users.</p>
+
                     <h3 class="text-lg font-bold text-gray-900 mb-4">Add Scratch Credits</h3>
                     <form id="scratchForm">
                         @csrf

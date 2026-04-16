@@ -371,12 +371,22 @@ class SuperAdminSubUsersController extends Controller
     public function addSubscription(Request $request)
     {
         try {
-            $childUsers = User::where('parent_id',$request->parent_id)->get();
 
-            $validatedData = $request->validate([
+         $validatedData = $request->validate([
                 'subscription_start_date' => 'required|date',
                 'subscription_end_date' => 'required|date|after_or_equal:subscription_start_date',
             ]);
+        
+            $parentUser = User::where('id',$request->parent_id)->first();
+
+            if($parentUser)
+            {
+                $parentUser->subscription_start_date = $validatedData['subscription_start_date'];
+                $parentUser->subscription_end_date = $validatedData['subscription_end_date'];
+                $parentUser->save();
+            }
+                    
+            $childUsers = User::where('parent_id',$request->parent_id)->get();
 
             foreach($childUsers as $user)
             {

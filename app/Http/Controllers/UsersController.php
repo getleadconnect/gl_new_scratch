@@ -450,7 +450,8 @@ class UsersController extends Controller
      */
     public function addSubscription(Request $request, $id)
     {
-        try {
+
+         try {
             $user = User::findOrFail($id);
 
             $validatedData = $request->validate([
@@ -462,26 +463,16 @@ class UsersController extends Controller
             $user->subscription_end_date = $validatedData['subscription_end_date'];
             $user->save();
 
-            /* --- apply subscription period to child users ---- */
-            $childUsers=User::where('parent_id',$user->id)->get();
-            if($childUsers)
-            {
-                foreach($childUsers as $user)
-                {
-                   $user->subscription_start_date = $validatedData['subscription_start_date'];
-                   $user->subscription_end_date = $validatedData['subscription_end_date'];
-                   $user->save();
-                }
-            }
-            /*-----------------------*/
-
-            //This is child user, Then update same period as parent(admin) user subscription period.
+            //This is child user, Then update same period to the parent(admin) user.
             if($user->role_id==3)
             {
                   $parentUser=User::where('id',$user->parent_id)->first();
-                  $parentUser->subscription_start_date = $validatedData['subscription_start_date'];
-                  $parentUser->subscription_end_date = $validatedData['subscription_end_date'];
-                  $parentUser->save();
+                  if($parentUser->subscription_end_date<$validatedData['subscription_end_date'])
+                    {
+                        $parentUser->subscription_start_date = $validatedData['subscription_start_date'];
+                        $parentUser->subscription_end_date = $validatedData['subscription_end_date'];
+                        $parentUser->save();
+                    }
             }
             
         	$sc=ScratchCount::where('user_id',$user->id)->first();
