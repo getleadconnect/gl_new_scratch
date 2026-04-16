@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use App\Models\Settings;
 use App\Models\PurchaseScratchHistory;
 use App\Models\ScratchCount;
+use App\Models\ScratchPackage;
 use Validator;
 use DB;
 
@@ -403,6 +404,7 @@ class UsersController extends Controller
 
         $scratchCount = ScratchCount::where('user_id', $user->id)->first();
         $childUsersCount = User::where('parent_id', $user->id)->whereNull('deleted_at')->count();
+        $scratchPackages = \App\Models\ScratchPackage::orderBy('scratch_count', 'ASC')->get();
 
         return view('admin.users.show', [
             'pageTitle' => 'User Profile',
@@ -413,6 +415,7 @@ class UsersController extends Controller
             'balance_scratch' => $scratchCount->balance_count ?? 0,
             'user_role_id'=>$user->role_id,
             'child_users_count' => $childUsersCount,
+            'scratchPackages' => $scratchPackages,
         ]);
     }
 
@@ -503,7 +506,7 @@ class UsersController extends Controller
 
 				$user_id=$user->id;
 				
-				$package=ScratchPackage::where('scratch_count',$scratch_count)->first();
+				$package=ScratchPackage::where('scratch_count',$request->scratch_count)->first();
                 $amount=0;
                 if($package)
                 {
