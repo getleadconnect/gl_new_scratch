@@ -260,13 +260,13 @@
                 <!-- Subscription Start Date -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Subscription Start Date <span class="text-red-500">*</span></label>
-                    <input type="date" name="subscription_start_date" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <input type="date" name="subscription_start_date" id="subscriptionStartDate" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
 
                 <!-- Subscription End Date -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Subscription End Date <span class="text-red-500">*</span></label>
-                    <input type="date" name="subscription_end_date" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <input type="date" name="subscription_end_date" id="subscriptionEndDate" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
             </div>
 
@@ -344,7 +344,7 @@
                 <!-- Parent users -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Parent User <span class="text-red-500">*</span></label>
-                    <select name="parent_user_id" id="editParentUserId" class=" w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" >
+                    <select name="edit_parent_user_id" id="editParentUserId" class=" w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" >
                         <option value="">Select Parent</option>
                         @if($parent_users)
                             @foreach($parent_users as $row)
@@ -496,7 +496,7 @@ $("#role").change(function()
 
 $("#editRole").change(function()
 {
-    if($(this).val()==3){
+     if($(this).val()==3){
         $("#editParentUserId").prop('disabled',false);
         $("#editParentUserId").prop('required',true);
         $("#editParentUserId").removeClass('disabled');
@@ -615,10 +615,12 @@ $('#addUserForm').on('submit', function(e) {
         address: $('textarea[name="address"]').val(),
         role: $('select[name="role"]').val(),
         password: $('input[name="password"]').val(),
+        parent_id:$('select[name="parent_user_id"]').val(),
         subscription_start_date: $('input[name="subscription_start_date"]').val(),
         subscription_end_date: $('input[name="subscription_end_date"]').val(),
         _token: '{{ csrf_token() }}'
     };
+
 
     $.ajax({
         url: '{{ route("admin.users.store") }}',
@@ -633,7 +635,12 @@ $('#addUserForm').on('submit', function(e) {
                 // Show success notification
                 showNotification('success', response.message);
                 // Reload DataTable
+                
+                $("#subscriptionStartDate").prop('disabled',false);
+                $("#subscriptionEndDate").prop('disabled',false);
+
                 $('#users-table').DataTable().ajax.reload();
+
             } else {
                 showNotification('error', response.message);
             }
@@ -650,6 +657,54 @@ $('#addUserForm').on('submit', function(e) {
         }
     });
 });
+
+
+// Handle Add User Form Submission
+$('#parentUserId').on('change', function(e) {
+    e.preventDefault();
+
+ let userId=$(this).val();
+
+    $.ajax({
+        url: '{{ route("admin.users.admin-subscription-period",":id")}}'.replace(':id', userId),
+        type: 'GET',
+           success: function(response) {
+            console.log(response);
+           $("#subscriptionStartDate").val(response.data.start_date);
+           $("#subscriptionEndDate").val(response.data.end_date);
+           $("#subscriptionStartDate").prop('disabled',true);
+           $("#subscriptionEndDate").prop('disabled',true);
+        },
+        error: function(xhr) {
+            let errorMessage = 'An error occurred while geting subscription date.';
+            if (xhr.responseJSON && xhr.responseJSON.errors) {
+                const errors = xhr.responseJSON.errors;
+                errorMessage = Object.values(errors).flat().join('<br>');
+            } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+            showNotification('error', errorMessage);
+        }
+    });
+});
+
+
+$("#subscriptionStartDate").change(function()
+{
+    let date = new Date($(this).val()); // current date
+    date.setFullYear(date.getFullYear() + 1);
+    console.log(date);
+
+    let year = date.getFullYear();
+    let month = String(date.getMonth() + 1).padStart(2, '0');
+    let day = String(date.getDate()-1).padStart(2, '0');
+
+    let newDate=`${year}-${month}-${day}`;
+
+    $("#subscriptionEndDate").val(newDate);
+
+})
+
 
 // Filter Apply / Reset
 $('#btn-apply-filter').on('click', function() {
@@ -690,7 +745,7 @@ function editUser(userId) {
                 // Set phone number with country code
                 const fullPhone = user.country_code + user.mobile;
                 editIti.setNumber(fullPhone);
-
+                $("#editRole").change();
                 // Show modal
                 $('#editUserModal').removeClass('hidden');
             } else {

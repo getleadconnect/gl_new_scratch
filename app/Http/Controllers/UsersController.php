@@ -211,6 +211,7 @@ class UsersController extends Controller
             $userMobile = $validatedData['country_code'] . $validatedData['mobile'];
             $existingUser = User::where('user_mobile', $userMobile)->first();
 
+
             if ($existingUser) {
                 return response()->json([
                     'success' => false,
@@ -391,6 +392,31 @@ class UsersController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to delete user.'
+            ], 500);
+        }
+    }
+
+
+    /**
+     * to get selected admin user subscription period.
+     */
+    public function getAdminSubscriptionPeriod($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            $period['start_date']=$user->subscription_start_date;
+            $period['end_date']=$user->subscription_end_date;
+
+            return response()->json([
+                'success' => true,
+                'data' => $period,
+                'message' => 'subscription dates.'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to get subscription dates.'
             ], 500);
         }
     }

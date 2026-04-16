@@ -109,6 +109,8 @@ Route::middleware(['auth', 'superadmin'])->prefix('admin')->name('admin.')->grou
         Route::post('/users/{id}/subscription', [UsersController::class, 'addSubscription'])->name('users.addSubscription');
         Route::post('/users/{id}/scratch', [UsersController::class, 'addScratch'])->name('users.addScratch');
         Route::get('/users/{id}/scratch-history', [UsersController::class, 'getScratchHistory'])->name('users.scratchHistory');
+
+        Route::get('/users/admin-period/{id}', [UsersController::class, 'getAdminSubscriptionPeriod'])->name('users.admin-subscription-period');
         
         Route::get('/sub-users/data', [SuperAdminSubUsersController::class, 'getChildUsersData'])->name('sub-users.data');
         Route::get('/sub-users/{id}', [SuperAdminSubUsersController::class, 'index'])->name('sub-users.index');
