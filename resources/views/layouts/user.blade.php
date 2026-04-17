@@ -8,9 +8,21 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <link rel="stylesheet" href="{{ asset('assets/css/custom-style.css') }}">
+    @php
+    $user_id=auth()->user()->id;
+    $logo=\App\Models\CompanyLogo::where('user_id',$user_id)->where('type','logo')->where('is_active',1)->first();
+    $favicon=\App\Models\CompanyLogo::where('user_id',$user_id)->where('type','favicon')->where('is_active',1)->first();
 
-@yield('styles')
+    $img_logo=$img_favicon="";
+      if($logo){  $img_logo=$logo->logo_image; }
+      if($favicon){  $img_favicon=$logo->logo_image;  }
+    @endphp
+
+        <link rel="icon" href="{{asset('uploads/'.$img_favicon)}}" type="image/png" />
+
+        <link rel="stylesheet" href="{{ asset('assets/css/custom-style.css') }}">
+    @yield('styles')
+
 
 </head>
 
@@ -21,7 +33,11 @@
             <div class="flex flex-col h-full">
                 <!-- Logo -->
                 <div class="px-6 py-4 border-b border-border">
+                    @if($img_logo!="")
+                    <img src="{{asset('uploads/'.$img_logo)}}" > 
+                    @else
                     <img src="{{url('/assets/img/logo-scratch.png')}}" > 
+                    @endif
                     <!--<h1 class="text-xl font-bold text-primary"><span style="color:red;">GL</span>-SCRATCH</h1>-->
                     <p class="text-sm text-muted-foreground" style="text-align:center;font-weight:700;">User Panel</p>
                 </div>
