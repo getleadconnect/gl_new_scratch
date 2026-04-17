@@ -25,6 +25,9 @@ use App\Http\Controllers\ScratchPackageController;
 use App\Http\Controllers\ScratchPurchaseController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PurchaseHistoryController;
+use App\Http\Controllers\HelpController;
+use App\Http\Controllers\UserHelpController;
+use App\Http\Controllers\AdminHelpController;
 use App\Http\Controllers\LogoFaviconController;
 use Illuminate\Support\Facades\Route;
 
@@ -88,6 +91,8 @@ Route::middleware(['auth', 'superadmin'])->prefix('admin')->name('admin.')->grou
     Route::get('/gifts-list/data', [AdminGiftsListController::class, 'getData'])->name('gifts-list.data');
 
     // Admin purchase history (role_id 1 — child users' purchase history)
+    Route::get('/admin-help', [AdminHelpController::class, 'index'])->name('admin-help.index');
+
     Route::get('/admin-purchase-history',      [PurchaseHistoryController::class, 'adminIndex'])->name('admin-purchase-history.index');
     Route::get('/admin-purchase-history/data', [PurchaseHistoryController::class, 'adminGetData'])->name('admin-purchase-history.data');
     Route::get('/admin-purchase-history/export',[PurchaseHistoryController::class, 'adminExport'])->name('admin-purchase-history.export');
@@ -129,6 +134,9 @@ Route::middleware(['auth', 'superadmin'])->prefix('admin')->name('admin.')->grou
         Route::get('/purchase-history',      [PurchaseHistoryController::class, 'index'])->name('purchase-history.index');
         Route::get('/purchase-history/data',   [PurchaseHistoryController::class, 'getData'])->name('purchase-history.data');
         Route::get('/purchase-history/export', [PurchaseHistoryController::class, 'export'])->name('purchase-history.export');
+
+        // Help & Support
+        Route::get('/help', [HelpController::class, 'index'])->name('help.index');
 
         // Payments routes
         Route::get('/payments',        [PaymentController::class, 'index'])->name('payments.index');
@@ -223,6 +231,9 @@ Route::middleware(['auth', 'userrole'])->prefix('user')->name('user.')->group(fu
     Route::get('/purchase-history',        [PurchaseHistoryController::class, 'userIndex'])->name('purchase-history.index');
     Route::get('/purchase-history/data',   [PurchaseHistoryController::class, 'userGetData'])->name('purchase-history.data');
     Route::get('/purchase-history/export', [PurchaseHistoryController::class, 'userExport'])->name('purchase-history.export');
+
+    // Help & Support
+    Route::get('/help', [UserHelpController::class, 'index'])->name('help.index');
 
     // Customers routes
     Route::get('/customers',        [CustomersController::class, 'index'])->name('customers.index');
