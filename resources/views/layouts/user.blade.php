@@ -13,9 +13,10 @@
     $logo=\App\Models\CompanyLogo::where('user_id',$user_id)->where('type','logo')->where('is_active',1)->first();
     $favicon=\App\Models\CompanyLogo::where('user_id',$user_id)->where('type','favicon')->where('is_active',1)->first();
 
-    $img_logo=$img_favicon="";
+      $img_logo=$img_favicon="";
       if($logo){  $img_logo=$logo->logo_image; }
-      if($favicon){  $img_favicon=$logo->logo_image;  }
+      if($favicon){  $img_favicon=$favicon->logo_image;  }
+
     @endphp
 
         <link rel="icon" href="{{asset('uploads/'.$img_favicon)}}" type="image/png" />
