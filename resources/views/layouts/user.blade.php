@@ -32,9 +32,9 @@
         <aside id="sidebar" class="w-64 bg-white border-r border-border flex-shrink-0 hidden md:block">
             <div class="flex flex-col h-full">
                 <!-- Logo -->
-                <div class="px-6 py-4 border-b border-border">
+                <div class="px-6 py-4 border-b border-border" >
                     @if($img_logo!="")
-                    <img src="{{asset('uploads/'.$img_logo)}}" > 
+                    <img src="{{asset('uploads/'.$img_logo)}}"  style="margin:0 auto;width:150px;"> 
                     @else
                     <img src="{{url('/assets/img/logo-scratch.png')}}" > 
                     @endif
