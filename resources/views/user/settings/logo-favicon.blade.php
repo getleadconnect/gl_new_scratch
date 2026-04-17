@@ -55,8 +55,8 @@
                     <!-- Set as Active -->
                     <div class="flex items-center gap-2">
                         <input type="checkbox" name="is_active" id="add_active" value="1"
-                            class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
-                        <label for="add_active" class="text-sm text-gray-700">Set as Active Logo</label>
+                            class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded" checked>
+                        <label for="add_active" class="text-sm text-gray-700">Set as Active </label>
                     </div>
                     <p class="text-xs text-gray-400" style="margin-top:4px;">Note: Only one logo of each type can be active at a time. Setting this as active will deactivate all other logos of the same type.</p>
 
